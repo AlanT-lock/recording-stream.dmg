@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Recorder - Modifier votre vidéo</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div id="editorView" class="view">
+      <header class="header">
+        <h1>Modifier votre vidéo</h1>
+        <p class="subtitle">Coupez le début, la fin et les moments au milieu, puis exportez</p>
+      </header>
+
+      <main class="main editor-main">
+        <div class="video-preview-container">
+          <video id="editorVideo" class="editor-video" controls></video>
+        </div>
+
+        <div class="trim-section">
+          <h3 class="section-title">Couper le début et la fin</h3>
+          <div class="trim-controls">
+            <div class="trim-input-group">
+              <label>Début (sec)</label>
+              <input type="number" id="trimStart" min="0" step="0.1" value="0">
+            </div>
+            <div class="trim-input-group">
+              <label>Fin (sec)</label>
+              <input type="number" id="trimEnd" min="0" step="0.1">
+            </div>
+          </div>
+          <div class="trim-slider">
+            <input type="range" id="trimStartRange" min="0" max="100" value="0" class="trim-range">
+            <input type="range" id="trimEndRange" min="0" max="100" value="100" class="trim-range">
+          </div>
+
+          <h3 class="section-title trim-subtitle">Moments à supprimer (au milieu)</h3>
+          <div id="cutSegmentsList" class="cut-segments-list"></div>
+          <button type="button" class="btn btn-secondary btn-sm" id="addCutSegmentBtn">+ Ajouter un moment à supprimer</button>
+        </div>
+
+        <div class="export-section">
+          <h3 class="section-title">Exporter</h3>
+          <div class="export-options">
+            <div class="export-option">
+              <label>Format</label>
+              <select id="exportFormat">
+                <option value="webm">WebM (original, rapide)</option>
+                <option value="mp4">MP4 (compatible partout)</option>
+              </select>
+            </div>
+            <div class="export-option">
+              <label>Qualité</label>
+              <select id="exportQuality">
+                <option value="low">Basse (~1 Mbps)</option>
+                <option value="medium" selected>Moyenne (~3 Mbps)</option>
+                <option value="high">Haute (~6 Mbps)</option>
+              </select>
+            </div>
+          </div>
+          <div class="export-estimate" id="exportEstimate"></div>
+          <div class="export-actions">
+            <a href="./" class="btn btn-secondary">← Nouvel enregistrement</a>
+            <button type="button" class="btn btn-primary" id="exportBtn">
+              <span class="btn-icon">⬇</span>
+              Télécharger
+            </button>
+          </div>
+        </div>
+
+        <div class="export-progress" id="exportProgress" hidden>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p id="progressText">Conversion en cours...</p>
+        </div>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <p>100% gratuit · Open Source · Aucune donnée envoyée · Chrome recommandé</p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/editor-page.js"></script>
+</body>
+</html>

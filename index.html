@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slide Recorder</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1>Slide Recorder</h1>
+      <p class="subtitle">Enregistrez vos présentations avec votre visage en pastille</p>
+    </header>
+
+    <main class="main">
+      <div class="preview-container">
+        <div class="preview-placeholder" id="previewPlaceholder">
+          <div class="placeholder-content">
+            <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>Cliquez sur "Démarrer" pour lancer l'enregistrement</p>
+          </div>
+        </div>
+        <canvas id="previewCanvas" class="preview-canvas" hidden></canvas>
+      </div>
+
+      <div class="camera-config" id="cameraConfig">
+        <h3 class="config-title">Configuration de la caméra</h3>
+
+        <div class="config-option-group">
+          <label for="pastilleSize" class="config-label">Taille de la pastille</label>
+          <select id="pastilleSize">
+            <option value="0.15">Petite (15%)</option>
+            <option value="0.2" selected>Moyenne (20%)</option>
+            <option value="0.25">Grande (25%)</option>
+          </select>
+        </div>
+
+        <div class="camera-preview-wrap">
+          <div class="camera-preview-container" id="cameraPreviewContainer">
+            <div class="camera-preview-placeholder" id="cameraPreviewPlaceholder">
+              <button type="button" class="btn btn-secondary" id="activatePreviewBtn">
+                Activer l'aperçu de la caméra
+              </button>
+            </div>
+            <video id="cameraPreviewVideo" class="camera-preview-video" playsinline muted autoplay hidden></video>
+            <canvas id="cameraPreviewComposite" class="camera-preview-video" hidden></canvas>
+          </div>
+        </div>
+
+        <div class="config-options">
+          <label class="option">
+            <input type="checkbox" id="mirrorCam" checked>
+            <span>Inverser l'image (effet miroir)</span>
+          </label>
+          <label class="option">
+            <input type="checkbox" id="blurBackground">
+            <span>Flou autour du visage</span>
+          </label>
+          <div class="option blur-intensity-wrap" id="blurIntensityWrap">
+            <label for="blurIntensity">Intensité du flou</label>
+            <input type="range" id="blurIntensity" min="10" max="100" value="50">
+            <span id="blurIntensityValue">50%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="button-group">
+          <button type="button" class="btn btn-primary" id="startBtn">
+            <span class="btn-icon">▶</span>
+            Démarrer l'enregistrement
+          </button>
+          <button type="button" class="btn btn-danger" id="stopBtn" disabled>
+            <span class="btn-icon">⏹</span>
+            Arrêter
+          </button>
+        </div>
+
+        <div class="status" id="status"></div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>100% gratuit · Open Source · Aucune donnée envoyée</p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/recorder-page.js"></script>
+</body>
+</html>
