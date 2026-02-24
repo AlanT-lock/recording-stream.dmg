@@ -7,6 +7,20 @@
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
+  <div class="download-banner" id="downloadBanner">
+    <div class="download-banner-content">
+      <span class="download-banner-text">L'enregistrement fonctionne mieux avec l'application macOS. Téléchargez-la gratuitement.</span>
+      <a href="#" class="btn btn-download" id="downloadAppBtn" download>
+        <span class="btn-icon">⬇</span>
+        Télécharger pour macOS
+      </a>
+    </div>
+  </div>
+  <script>
+    if (window.electronAPI?.isElectron) {
+      document.getElementById('downloadBanner').style.display = 'none';
+    }
+  </script>
   <div class="app">
     <header class="header">
       <h1>Slide Recorder</h1>

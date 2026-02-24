@@ -1,5 +1,6 @@
 /**
  * Picture-in-Picture : fenêtre compacte avec aperçu et contrôles
+ * Web : documentPictureInPicture | Electron : fenêtre native macOS
  */
 
 import { icons } from './icons.js';
@@ -13,8 +14,20 @@ const PIP_PREVIEW_WIDTH = 360;
 const PIP_BUTTON_HEIGHT = 44;
 const PIP_PADDING = 8;
 
+const isElectron = !!window.electronAPI?.isElectron;
+
 export function initPipManager() {
-  if (!window.documentPictureInPicture) return;
+  if (isElectron) {
+    window.electronAPI?.onPipControl?.((action) => {
+      if (!recorderControls) return;
+      if (action === 'mic') recorderControls.setMicEnabled(!recorderControls.getMicEnabled());
+      if (action === 'cam') recorderControls.setCameraEnabled(!recorderControls.getCameraEnabled());
+      if (action === 'screen') recorderControls.setScreenEnabled(!recorderControls.getScreenEnabled());
+      if (action === 'stop') recorderControls.stopRecording();
+    });
+  }
+
+  if (!window.documentPictureInPicture && !isElectron) return;
 
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
@@ -30,9 +43,16 @@ export function setRecorderControls(controls) {
 }
 
 export function requestPipWindow() {
-  if (!window.documentPictureInPicture || pipWindow) return Promise.resolve();
+  if (pipWindow) return Promise.resolve();
 
   recordingInProgress = true;
+
+  if (isElectron) {
+    return Promise.resolve();
+  }
+
+  if (!window.documentPictureInPicture) return Promise.resolve();
+
   const previewHeight = Math.round(PIP_PREVIEW_WIDTH / (16 / 9));
   const totalHeight = previewHeight + PIP_BUTTON_HEIGHT + PIP_PADDING * 2;
 
@@ -152,7 +172,7 @@ function buildPipContent() {
 let pipRetryCount = 0;
 
 function moveContentToPip() {
-  if (!pipWindow || !recorderControls) return;
+  if (!recorderControls) return;
   if (!recordingInProgress) return;
 
   const canvas = recorderControls.getPreviewCanvas?.();
@@ -165,6 +185,21 @@ function moveContentToPip() {
   }
   pipRetryCount = 0;
 
+  if (isElectron) {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width > 0 && rect.height > 0) {
+      window.electronAPI?.requestPipWindow?.({
+        x: Math.round(rect.x),
+        y: Math.round(rect.y),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height)
+      });
+    }
+    return;
+  }
+
+  if (!pipWindow) return;
+
   const content = buildPipContent();
   if (!content) return;
 
@@ -176,6 +211,10 @@ function moveContentToPip() {
 
 function moveContentBackAndClosePip() {
   cleanupPipContent();
+  if (isElectron) {
+    window.electronAPI?.closePipWindow?.();
+    return;
+  }
   if (pipWindow && !pipWindow.closed) {
     pipWindow.close();
     pipWindow = null;

@@ -1,0 +1,9 @@
+# Exclure les fichiers volumineux du déploiement Vercel (limite 100 MB)
+# Le DMG doit être hébergé sur GitHub Releases. Définir VITE_DOWNLOAD_URL dans Vercel.
+node_modules
+release
+*.dmg
+*.blockmap
+public/downloads
+.git
+.vercel
