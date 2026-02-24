@@ -6,10 +6,12 @@ import { initRecorder } from './recorder.js';
 import { DOWNLOAD_URL } from './config.js';
 import { initPipManager, requestPipWindow, setRecordingEnded, setRecorderControls } from './pip-manager.js';
 
-// Configurer le bouton de téléchargement macOS (visible uniquement sur le web)
-const downloadBtn = document.getElementById('downloadAppBtn');
-if (downloadBtn && !window.electronAPI?.isElectron) {
-  downloadBtn.href = DOWNLOAD_URL;
+// Configurer les boutons de téléchargement macOS (visibles uniquement sur le web)
+if (!window.electronAPI?.isElectron) {
+  ['downloadAppBtn', 'downloadAppBtnCta'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.href = DOWNLOAD_URL;
+  });
 }
 
 import { saveRecording } from './storage.js';

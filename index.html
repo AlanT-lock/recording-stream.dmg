@@ -18,13 +18,20 @@
   </div>
   <script>
     if (window.electronAPI?.isElectron) {
-      document.getElementById('downloadBanner').style.display = 'none';
+      document.getElementById('downloadBanner')?.style.setProperty('display', 'none');
+      document.getElementById('downloadCta')?.style.setProperty('display', 'none');
     }
   </script>
   <div class="app">
     <header class="header">
       <h1>Slide Recorder</h1>
       <p class="subtitle">Enregistrez vos présentations avec votre visage en pastille</p>
+      <div class="download-cta" id="downloadCta">
+        <a href="#" class="btn btn-download btn-download-large" id="downloadAppBtnCta" download>
+          <span class="btn-icon">⬇</span>
+          Télécharger l'app macOS (gratuit)
+        </a>
+      </div>
     </header>
 
     <main class="main">
