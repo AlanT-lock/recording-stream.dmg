@@ -2,27 +2,15 @@
  * Page d'enregistrement
  */
 
+import '../styles.css';
 import { initRecorder } from './recorder.js';
-import { DOWNLOAD_URL } from './config.js';
-import { initPipManager, requestPipWindow, setRecordingEnded, setRecorderControls } from './pip-manager.js';
-
-// Configurer les boutons de téléchargement macOS (visibles uniquement sur le web)
-if (!window.electronAPI?.isElectron) {
-  ['downloadAppBtn', 'downloadAppBtnCta'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.href = DOWNLOAD_URL;
-  });
-}
-
 import { saveRecording } from './storage.js';
 import { initCameraPreview } from './camera-preview.js';
 
-initPipManager();
 initCameraPreview();
 
 const recorderControls = initRecorder({
-  onBeforeStart: requestPipWindow,
-  onRecordingEnd: setRecordingEnded,
+  onRecordingEnd: () => {},
   onStatus(msg, type) {
     const el = document.getElementById('status');
     if (el) {
@@ -35,5 +23,3 @@ const recorderControls = initRecorder({
     window.location.href = `./editor.html?id=${encodeURIComponent(id)}`;
   }
 });
-
-setRecorderControls(recorderControls);

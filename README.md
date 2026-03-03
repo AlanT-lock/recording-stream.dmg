@@ -35,23 +35,6 @@ npm run preview
 
 Puis ouvrez **http://localhost:5173** (dev) ou **http://localhost:4173** (preview).
 
-## 🍎 Application macOS
-
-Une version application macOS est disponible pour une meilleure expérience d'enregistrement (moins de restrictions que le navigateur).
-
-```bash
-# Lancer l'app en mode développement
-npm run electron:dev
-
-# Build de l'installateur DMG
-npm run electron:build
-
-# Build + copier le DMG pour déploiement web (inclut le fichier dans dist/)
-npm run electron:build:deploy
-```
-
-Le fichier DMG sera dans `release/Slide Recorder-1.0.0-arm64.dmg`. Pour le déploiement web, exécutez `electron:build:deploy` puis déployez le dossier `dist/`. L'URL de téléchargement par défaut est `/downloads/SlideRecorder.dmg`. Pour une URL personnalisée (ex. GitHub Releases), définissez `VITE_DOWNLOAD_URL` au build.
-
 ## 📖 Utilisation
 
 1. Cliquez sur **Démarrer l'enregistrement**

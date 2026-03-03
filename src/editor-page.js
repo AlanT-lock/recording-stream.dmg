@@ -2,6 +2,7 @@
  * Page éditeur - Chargée uniquement après redirection
  */
 
+import '../styles.css';
 import { getRecording, deleteRecording } from './storage.js';
 import { processVideo, estimateFileSize } from './ffmpeg-service.js';
 
@@ -24,6 +25,7 @@ function initEditor(currentRecordingId) {
   const addCutSegmentBtn = document.getElementById('addCutSegmentBtn');
   const exportFormat = document.getElementById('exportFormat');
   const exportQuality = document.getElementById('exportQuality');
+  const exportFilename = document.getElementById('exportFilename');
   const exportEstimate = document.getElementById('exportEstimate');
   const exportBtn = document.getElementById('exportBtn');
   const exportProgress = document.getElementById('exportProgress');
@@ -142,6 +144,11 @@ function initEditor(currentRecordingId) {
     updateEstimate();
   });
 
+  function getDefaultFilename() {
+    const now = new Date();
+    return `Slide Recorder - ${now.toISOString().slice(0, 10)} ${now.toTimeString().slice(0, 5).replace(':', 'h')}`;
+  }
+
   editorVideo.addEventListener('loadedmetadata', () => {
     videoDuration = editorVideo.duration;
     trimEnd.value = videoDuration.toFixed(1);
@@ -150,6 +157,7 @@ function initEditor(currentRecordingId) {
     trimEndRange.value = 100;
     renderCutSegments();
     updateEstimate();
+    if (exportFilename && !exportFilename.value.trim()) exportFilename.placeholder = getDefaultFilename();
   });
 
   exportBtn.addEventListener('click', async () => {
@@ -193,19 +201,28 @@ function initEditor(currentRecordingId) {
       }
 
       const ext = format === 'mp4' ? 'mp4' : 'webm';
+      const customName = exportFilename?.value?.trim();
+      const baseName = customName || getDefaultFilename();
+      const safeName = baseName.replace(/[<>:"/\\|?*]/g, '_').trim() || 'Slide Recorder';
+      const filename = `${safeName}.${ext}`;
+
       const url = URL.createObjectURL(outputBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `slide-recording-${Date.now()}.${ext}`;
+      a.download = filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
 
       progressText.textContent = 'Téléchargement terminé !';
       progressFill.style.width = '100%';
 
     } catch (err) {
       console.error(err);
-      progressText.textContent = `Erreur : ${err.message}`;
+      const errMsg = err?.message ?? err?.toString?.() ?? String(err) ?? 'Erreur inconnue';
+      progressText.textContent = `Erreur : ${errMsg}`;
     } finally {
       exportBtn.disabled = false;
       setTimeout(() => {
@@ -231,6 +248,7 @@ function initEditor(currentRecordingId) {
       cutSegments = [];
       renderCutSegments();
       updateEstimate();
+      if (exportFilename && !exportFilename.value.trim()) exportFilename.placeholder = getDefaultFilename();
     } catch (err) {
       console.error(err);
       alert('Erreur de chargement. Retour à l\'enregistrement.');

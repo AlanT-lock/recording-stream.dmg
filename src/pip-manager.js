@@ -1,6 +1,5 @@
 /**
- * Picture-in-Picture : fenêtre compacte avec aperçu et contrôles
- * Web : documentPictureInPicture | Electron : fenêtre native macOS
+ * Picture-in-Picture : fenêtre compacte avec aperçu et contrôles (documentPictureInPicture)
  */
 
 import { icons } from './icons.js';
@@ -14,20 +13,8 @@ const PIP_PREVIEW_WIDTH = 360;
 const PIP_BUTTON_HEIGHT = 44;
 const PIP_PADDING = 8;
 
-const isElectron = !!window.electronAPI?.isElectron;
-
 export function initPipManager() {
-  if (isElectron) {
-    window.electronAPI?.onPipControl?.((action) => {
-      if (!recorderControls) return;
-      if (action === 'mic') recorderControls.setMicEnabled(!recorderControls.getMicEnabled());
-      if (action === 'cam') recorderControls.setCameraEnabled(!recorderControls.getCameraEnabled());
-      if (action === 'screen') recorderControls.setScreenEnabled(!recorderControls.getScreenEnabled());
-      if (action === 'stop') recorderControls.stopRecording();
-    });
-  }
-
-  if (!window.documentPictureInPicture && !isElectron) return;
+  if (!window.documentPictureInPicture) return;
 
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
@@ -46,10 +33,6 @@ export function requestPipWindow() {
   if (pipWindow) return Promise.resolve();
 
   recordingInProgress = true;
-
-  if (isElectron) {
-    return Promise.resolve();
-  }
 
   if (!window.documentPictureInPicture) return Promise.resolve();
 
@@ -185,19 +168,6 @@ function moveContentToPip() {
   }
   pipRetryCount = 0;
 
-  if (isElectron) {
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width > 0 && rect.height > 0) {
-      window.electronAPI?.requestPipWindow?.({
-        x: Math.round(rect.x),
-        y: Math.round(rect.y),
-        width: Math.round(rect.width),
-        height: Math.round(rect.height)
-      });
-    }
-    return;
-  }
-
   if (!pipWindow) return;
 
   const content = buildPipContent();
@@ -211,10 +181,6 @@ function moveContentToPip() {
 
 function moveContentBackAndClosePip() {
   cleanupPipContent();
-  if (isElectron) {
-    window.electronAPI?.closePipWindow?.();
-    return;
-  }
   if (pipWindow && !pipWindow.closed) {
     pipWindow.close();
     pipWindow = null;
